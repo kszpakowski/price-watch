@@ -1,11 +1,14 @@
 version: "3"
 services:
-  mongo:
-    image: "mongo:4.4.6-bionic"
-    restart: always
-    volumes:
-      - db-data:/data/db
+  db:
+    image: postgres:13.0
     ports:
-      - "27017:27017"
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=p0stgres
+      - POSTGRES_DB=data
+    volumes:
+      - db-data:/var/lib/postgresql/data
 volumes:
   db-data:
