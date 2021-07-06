@@ -1,0 +1,11 @@
+version: "3"
+services:
+  mongo:
+    image: "mongo:4.4.6-bionic"
+    restart: always
+    volumes:
+      - db-data:/data/db
+    ports:
+      - "27017:27017"
+volumes:
+  db-data:
