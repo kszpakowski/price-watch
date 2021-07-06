@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/kszpakowski/price-watch/issues"
   },
-  "homepage": "https://github.com/kszpakowski/price-watch#readme"
+  "homepage": "https://github.com/kszpakowski/price-watch#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
+    "node-schedule": "^2.0.0"
+  }
 }
