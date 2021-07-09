@@ -1,14 +1,7 @@
 version: "3"
 services:
-  db:
-    image: postgres:13.0
-    ports:
-      - 5432:5432
+  pricewatch:
+    restart: always
+    build: .
     environment:
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=p0stgres
-      - POSTGRES_DB=data
-    volumes:
-      - db-data:/var/lib/postgresql/data
-volumes:
-  db-data:
+      - SLACK_WEBHOOK_URL= ''
