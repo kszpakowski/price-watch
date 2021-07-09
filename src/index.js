@@ -5,19 +5,20 @@ const puppeteer = require("puppeteer");
 
 const { buildPriceUpdateMessage } = require("./slackMessages.js");
 const { productsRepository } = require("./productsRepository.js");
+const { logger } = require("./logger.js");
 
 //"0/4 * 9-23 * * *"
-const job = schedule.scheduleJob("*/30 * * * *", async function () {
+const job = schedule.scheduleJob("*/30 9-23 * * *", async function () {
   const browser = await puppeteer.launch();
 
   for (var product of productsRepository.getAllProducts()) {
-    console.log(`Fetching ${product.name} price`);
+    logger.info(`Fetching ${product.name} price`);
     for (var page of product.pages) {
-      const { lastPrice, url, priceElemId } = page;
+      const { lastPrice, url, priceElemSelector } = page;
       const browserPage = await browser.newPage();
       await browserPage.goto(url);
       const price = await browserPage
-        .$(`#${priceElemId}`)
+        .$(priceElemSelector)
         .then((element) => element.getProperty("innerText"))
         .then((handle) => handle.jsonValue());
 
@@ -34,3 +35,5 @@ const job = schedule.scheduleJob("*/30 * * * *", async function () {
 
   await browser.close();
 });
+
+logger.info("PriceWatch started");
