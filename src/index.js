@@ -15,7 +15,7 @@ const job = schedule.scheduleJob(UPDATE_CRON, async () => {
   console.log(`Fetching price updates for ${products.length} products`);
 
   const browser = await puppeteer.launch({
-    args: ["--no-sandbox", "--disable-setuid-sandbox"], // TODO use sandbox in docker
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 
   for (var product of products) {
