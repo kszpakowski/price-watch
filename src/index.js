@@ -7,6 +7,8 @@ const { buildPriceUpdateMessage } = require("./slackMessages.js");
 const { productsRepository } = require("./productsRepository.js");
 const { logger } = require("./logger.js");
 
+const { SLACK_WEBHOOK_URL } = process.env;
+
 //"0/4 * 9-23 * * *"
 const job = schedule.scheduleJob("*/30 9-23 * * *", async function () {
   const browser = await puppeteer.launch();
@@ -24,7 +26,7 @@ const job = schedule.scheduleJob("*/30 9-23 * * *", async function () {
 
       if (!lastPrice || lastPrice !== price) {
         await axios.post(
-          process.env.SLACK_WEBHOOK_URL,
+          SLACK_WEBHOOK_URL,
           buildPriceUpdateMessage(product.name, price, url, product.photoUrl)
         );
       }

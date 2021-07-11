@@ -3,5 +3,4 @@ services:
   pricewatch:
     restart: always
     build: .
-    environment:
-      - SLACK_WEBHOOK_URL= ''
+    env_file: .env
