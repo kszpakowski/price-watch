@@ -7,16 +7,21 @@ const { buildPriceUpdateMessage } = require("./slackMessages.js");
 const { productsRepository } = require("./productsRepository.js");
 const { logger } = require("./logger.js");
 
-const { SLACK_WEBHOOK_URL } = process.env;
+const { SLACK_WEBHOOK_URL, UPDATE_CRON } = process.env;
 
 //"0/4 * 9-23 * * *"
-const job = schedule.scheduleJob("*/30 9-23 * * *", async function () {
-  const browser = await puppeteer.launch();
+const job = schedule.scheduleJob(UPDATE_CRON, async () => {
+  const products = await productsRepository.getAllProducts();
+  console.log(`Fetching price updates for ${products.length} products`);
 
-  for (var product of productsRepository.getAllProducts()) {
-    logger.info(`Fetching ${product.name} price`);
+  const browser = await puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"], // TODO use sandbox in docker
+  });
+
+  for (var product of products) {
+    logger.info(`Fetching ${JSON.stringify(product, null, 2)} price`);
     for (var page of product.pages) {
-      const { lastPrice, url, priceElemSelector } = page;
+      const { id, lastPrice, url, priceElemSelector } = page;
       const browserPage = await browser.newPage();
       await browserPage.goto(url);
       const price = await browserPage
@@ -31,7 +36,7 @@ const job = schedule.scheduleJob("*/30 9-23 * * *", async function () {
         );
       }
 
-      page.lastPrice = price;
+      productsRepository.updatePrice(id, price);
     }
   }
 

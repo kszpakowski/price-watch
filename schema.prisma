@@ -1,0 +1,25 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id       Int    @id @default(autoincrement())
+  name     String
+  photoUrl String
+  pages    Page[]
+}
+
+model Page {
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now())
+  url               String
+  priceElemSelector String
+  Product           Product  @relation(fields: [productId], references: [id])
+  productId         Int
+  lastPrice         String   @default("")
+}

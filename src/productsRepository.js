@@ -1,25 +1,24 @@
-//mock data
-const products = [
-  {
-    id: 1,
-    name: "Lampa podłogowa",
-    photoUrl:
-      "https://www.momastudio.pl/produkty/LAMPAPODLOGOWAREVOLVECZARNA5.jpg",
-    pages: [
-      {
-        url: "https://www.momastudio.pl/oswietlenie/lampy-podlogowe/lampa-podlogowa-revolve-czarna-bolia",
-        priceElemSelector: "#cenaproduktuok",
-      },
-      {
-        url: "https://pufadesign.pl/lampy-podlogowe/10156-lampa-podlogowa-revolve-bolia-czarna-5702410228054.html",
-        priceElemSelector: "#our_price_display",
-      },
-    ],
-  },
-];
+const { PrismaClient } = require("@prisma/client");
+
+const prisma = new PrismaClient();
 
 const productsRepository = {
-  getAllProducts: () => products,
+  getAllProducts: async () =>
+    await prisma.product.findMany({
+      include: {
+        pages: {},
+      },
+    }),
+  updatePrice: async (pageId, price) => {
+    await prisma.page.update({
+      where: {
+        id: pageId,
+      },
+      data: {
+        lastPrice: price,
+      },
+    });
+  },
 };
 
 module.exports.productsRepository = productsRepository;
